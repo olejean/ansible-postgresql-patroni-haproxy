@@ -1,0 +1,6 @@
+---
+# defaults file for patroni
+patroni_config_file: "/etc/patroni.yml"
+patroni_service_file: "/etc/systemd/system/patroni.service"
+postgresql_version: "16"
+

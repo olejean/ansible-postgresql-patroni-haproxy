@@ -1,0 +1,46 @@
+---
+# tasks file for patroni
+- name: Install PostgreSQL
+  apt:
+    name: "postgresql-{{ postgresql_version }}"
+    state: present
+  become: true
+
+- name: Install Patroni
+  pip:
+    name: patroni
+    state: present
+  become: true
+
+- name: Deploy Patroni configuration file
+  template:
+    src: patroni.yml.j2
+    dest: "{{ patroni_config_file }}"
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+  notify: Restart Patroni
+
+- name: Deploy systemd service file for Patroni
+  template:
+    src: patroni.service.j2
+    dest: "{{ patroni_service_file }}"
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+  notify: Restart Patroni
+
+- name: Reload systemd
+  systemd:
+    daemon_reload: yes
+  become: true
+
+- name: Enable and start Patroni service
+  systemd:
+    name: patroni
+    enabled: yes
+    state: started
+  become: true
+

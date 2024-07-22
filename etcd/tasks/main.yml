@@ -1,0 +1,78 @@
+---
+# tasks file for etcd
+- name: Set ETCD version and download URL
+  set_fact:
+    etcd_version: "{{ etcd_version }}"
+    download_url: "{{ download_url }}"
+    etcd_bin_dir: "/tmp/cluster-etcd"
+    etcd_tarball: "/tmp/etcd-{{ etcd_version }}-linux-amd64.tar.gz"
+    extracted_dir: "/tmp/test-etcd"
+
+- name: Remove old Etcd tarball and extract directory
+  file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - "{{ etcd_tarball }}"
+    - "{{ extracted_dir }}"
+  become: true
+
+- name: Create directory for Etcd binaries
+  file:
+    path: "{{ etcd_bin_dir }}"
+    state: directory
+  become: true
+
+- name: Download Etcd binary
+  get_url:
+    url: "{{ download_url }}/{{ etcd_version }}/etcd-{{ etcd_version }}-linux-amd64.tar.gz"
+    dest: "{{ etcd_tarball }}"
+  become: true
+
+- name: Extract Etcd binary
+  unarchive:
+    src: "{{ etcd_tarball }}"
+    dest: "{{ extracted_dir }}"
+    remote_src: yes
+    extra_opts: [--strip-components=1]
+  become: true
+
+- name: Copy Etcd binaries to the cluster directory
+  copy:
+    src: "{{ extracted_dir }}/etcd*"
+    dest: "{{ etcd_bin_dir }}"
+    mode: '0755'
+  become: true
+
+- name: Deploy Etcd configuration files
+  template:
+    src: etcd.yml.j2
+    dest: /etc/etcd/etcd.yml
+    owner: etcd
+    group: etcd
+    mode: '0644'
+  become: true
+  notify: Restart Etcd
+
+- name: Deploy systemd service file for Etcd
+  template:
+    src: etcd.service.j2
+    dest: /etc/systemd/system/etcd.service
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+  notify: Restart Etcd
+
+- name: Reload systemd
+  systemd:
+    daemon_reload: yes
+  become: true
+
+- name: Enable and start Etcd service
+  systemd:
+    name: etcd
+    enabled: yes
+    state: started
+  become: true
+

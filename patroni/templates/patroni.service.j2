@@ -1,0 +1,15 @@
+[Unit]
+Description=Patroni
+After=network.target
+
+[Service]
+Type=simple
+User=postgres
+Group=postgres
+ExecStart=/usr/local/bin/patroni {{ patroni_config_file }}
+Restart=always
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target
+

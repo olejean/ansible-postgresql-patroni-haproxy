@@ -1,0 +1,38 @@
+global
+    log /dev/log local0
+    log /dev/log local1 notice
+    chroot /var/lib/haproxy
+    stats socket /run/haproxy/admin.sock mode 660 level admin
+    stats timeout 30s
+    user haproxy
+    group haproxy
+    daemon
+
+defaults
+    log global
+    mode http
+    option httplog
+    option dontlognull
+    timeout connect 5000
+    timeout client 50000
+    timeout server 50000
+
+frontend stats
+    bind *:8404
+    mode http
+    stats enable
+    stats uri /stats
+    stats refresh 10s
+
+frontend patroni
+    bind *:5000
+    default_backend patroni-backend
+
+backend patroni-backend
+    mode tcp
+    balance roundrobin
+    option httpchk OPTIONS /
+    server patroni1 {{ hostvars['patroni1'].ansible_default_ipv4.address }}:8008 check
+    server patroni2 {{ hostvars['patroni2'].ansible_default_ipv4.address }}:8008 check
+    server patroni3 {{ hostvars['patroni3'].ansible_default_ipv4.address }}:8008 check
+

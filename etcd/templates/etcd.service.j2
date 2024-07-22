@@ -1,0 +1,16 @@
+[Unit]
+Description=etcd
+Documentation=https://etcd.io/docs/
+After=network.target
+
+[Service]
+Type=notify
+User=etcd
+Group=etcd
+ExecStart={{ etcd_bin_dir }}/etcd --config-file /etc/etcd/etcd.yml
+Restart=always
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target
+

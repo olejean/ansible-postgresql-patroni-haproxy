@@ -1,0 +1,12 @@
+- name: Настройка PostgreSQL с использованием Patroni, Etcd, HAProxy и Keepalived
+  hosts: all
+  roles:
+    - { role: etcd, tags: ["etcd"] }
+      #    when: "'etcd' in group_names" 
+    - role: patroni
+      when: "'patroni' in group_names"
+    - role: haproxy
+      when: "'haproxy' in group_names"
+    - role: keepalived
+      when: "'keepalived' in group_names"
+

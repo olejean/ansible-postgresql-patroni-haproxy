@@ -1,0 +1,9 @@
+---
+# handlers file for etcd
+#
+- name: Restart Etcd
+  systemd:
+    name: etcd
+    state: restarted
+  become: true
+

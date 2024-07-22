@@ -1,0 +1,9 @@
+---
+# defaults file for keepalived
+keepalived_config_file: "/etc/keepalived/keepalived.conf"
+virtual_router_id: 51
+state: "MASTER"
+priority: 100
+interface: "eth0"
+virtual_ip: "192.168.1.100"
+

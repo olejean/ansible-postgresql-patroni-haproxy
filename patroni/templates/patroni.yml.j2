@@ -1,0 +1,64 @@
+scope: postgres-cluster
+namespace: /service/
+name: {{ ansible_hostname }}
+
+restapi:
+  listen: {{ ansible_default_ipv4.address }}:8008
+  connect_address: {{ ansible_default_ipv4.address }}:8008
+
+etcd:
+  hosts: {% for host in groups['etcd'] %}{{ hostvars[host].ansible_default_ipv4.address }}:2379{% if not loop.last %},{% endif %}{% endfor %}
+
+bootstrap:
+  dcs:
+    ttl: 30
+    loop_wait: 10
+    retry_timeout: 10
+    maximum_lag_on_failover: 1048576
+    postgresql:
+      use_pg_rewind: true
+      parameters:
+        wal_level: replica
+        hot_standby: "on"
+        wal_keep_segments: 8
+        max_wal_senders: 5
+        max_replication_slots: 5
+  initdb:
+    - encoding: UTF8
+    - locale: en_US.UTF-8
+  users:
+    admin:
+      password: admin
+      options:
+        - createrole
+        - createdb
+
+postgresql:
+  listen: {{ ansible_default_ipv4.address }}:5432
+  connect_address: {{ ansible_default_ipv4.address }}:5432
+  data_dir: /var/lib/postgresql/{{ postgresql_version }}/main
+  bin_dir: /usr/lib/postgresql/{{ postgresql_version }}/bin
+  config_dir: /etc/postgresql/{{ postgresql_version }}/main
+  pgpass: /tmp/pgpass
+  authentication:
+    replication:
+      username: replicator
+      password: rep-pass
+    superuser:
+      username: postgres
+      password: postgres-pass
+  parameters:
+    unix_socket_directories: '.'
+  use_pg_rewind: true
+  create_replica_methods:
+    - basebackup
+  basebackup:
+    max-rate: 100M
+    checkpoint: fast
+
+tags:
+  nofailover: false
+  noloadbalance: false
+  clonefrom: false
+  nosync: false
+

@@ -1,0 +1,10 @@
+name: {{ ansible_hostname }}
+data-dir: {{ etcd_data_dir }}/{{ ansible_hostname }}
+listen-client-urls: http://{{ ansible_default_ipv4.address }}:2379
+advertise-client-urls: http://{{ ansible_default_ipv4.address }}:2379
+listen-peer-urls: http://{{ ansible_default_ipv4.address }}:2380
+initial-advertise-peer-urls: http://{{ ansible_default_ipv4.address }}:2380
+initial-cluster: {% for host in groups['etcd'] %}{{ host }}=http://{{ hostvars[host].ansible_default_ipv4.address }}:2380{% if not loop.last %},{% endif %}{% endfor %}
+initial-cluster-token: tkn
+initial-cluster-state: new
+

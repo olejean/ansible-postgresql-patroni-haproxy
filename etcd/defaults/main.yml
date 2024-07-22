@@ -1,9 +1,6 @@
----
-etcd_version: "v3.5.15"
-download_url: "https://storage.googleapis.com/etcd"
-etcd_bin_dir: "/tmp/cluster-etcd"
-etcd_data_dir: "/tmp/etcd"
-etcd_service_file: "/etc/systemd/system/etcd.service"
-etcd_config_file: "/etc/etcd/etcd.yml"
-etcd_peers: "{% for host in groups['etcd'] %}{{ host }}=http://{{ hostvars[host].ansible_default_ipv4.address }}:2380{% if not loop.last %},{% endif %}{% endfor %}"
+etcd_version: "3.5.15"
+etcd_name: "s1"
+etcd_client_port: "2379"
+etcd_peer_port: "2380"
+etcd_initial_cluster: "s1=http://192.168.1.10:2380,etcd2=http://192.168.1.11:22380,etcd3=http://192.168.1.12:32380"
 

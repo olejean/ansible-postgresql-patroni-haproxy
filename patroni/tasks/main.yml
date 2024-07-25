@@ -1,17 +1,61 @@
 ---
 # tasks file for patroni
+
+
+- name:  pip3 is installed
+  become: yes
+  apt:
+    pkg:
+      - python3-venv
+      - python3-pip
+      - python3-psycopg2
+        #  - patroni
+    state: present
+    update_cache: yes
+    cache_valid_time: 3600
+
+
+- name: Check if Patroni virtual environment exists
+  stat:
+    path: /opt/patroni_venv
+  register: venv_path
+
+- name: Create virtual environment for Patroni
+  command: python3 -m venv /opt/patroni_venv
+  when: not venv_path.stat.exists
+  become: yes
+
+- name: Upgrade pip in the virtual environment
+  command: /opt/patroni_venv/bin/pip install --upgrade pip
+  become: yes
+ 
+
+- name: Install Patroni with etcd3 and psycopg3 support
+  command: /opt/patroni_venv/bin/pip install patroni[psycopg3,etcd3]    
+  become: yes  
+
+
+- name: Verify Patroni installation
+  command: /opt/patroni_venv/bin/patroni --version
+  become: yes
+
+
 - name: Install PostgreSQL
   apt:
     name: "postgresql-{{ postgresql_version }}"
     state: present
   become: true
+  notify:
+        - Stop PostgreSQL
 
-- name: Install Patroni
-  pip:
-    name: patroni
-    state: present
-  become: true
+- name: Ensure PostgreSQL is not enabled
+      systemd:
+        name: postgresql
+        enabled: no
+        state: stopped
 
+    
+    
 - name: Deploy Patroni configuration file
   template:
     src: patroni.yml.j2

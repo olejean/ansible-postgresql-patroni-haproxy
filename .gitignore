@@ -1,1 +1,3 @@
 ansible.cfg
+*.bak
+password.txt

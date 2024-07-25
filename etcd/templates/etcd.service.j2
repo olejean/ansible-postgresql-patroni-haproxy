@@ -4,15 +4,17 @@ Documentation=https://github.com/etcd-io/etcd
 After=network.target
 
 [Service]
-ExecStart=/tmp/cluster-etcd/etcd --name {{ etcd_name }} \
-  --data-dir /tmp/etcd/{{ etcd_name }} \
-  --listen-client-urls http://{{ ansible_host }}:{{ etcd_client_port }} \
+ExecStart=/usr/bin/cluster-etcd/etcd --name {{ ansible_hostname }} \
+  --data-dir /usr/bin/etcd/{{ ansible_hostname }} \
+  --listen-client-urls http://0.0.0.0:2379 \
   --advertise-client-urls http://{{ ansible_host }}:{{ etcd_client_port }} \
-  --listen-peer-urls http://{{ ansible_host }}:{{ etcd_peer_port }} \
+  --listen-peer-urls http://0.0.0.0:2380 \
   --initial-advertise-peer-urls http://{{ ansible_host }}:{{ etcd_peer_port }} \
   --initial-cluster {{ etcd_initial_cluster }} \
   --initial-cluster-token tkn \
-  --initial-cluster-state new
+  --initial-cluster-state new \
+  --enable-v2   
+
 Restart=always
 RestartSec=10s
 LimitNOFILE=40000

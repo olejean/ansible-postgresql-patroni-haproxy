@@ -1,6 +1,6 @@
 etcd_version: "3.5.15"
-etcd_name: "s1"
+  #etcd_name: {{ ansible_host }}
 etcd_client_port: "2379"
 etcd_peer_port: "2380"
-etcd_initial_cluster: "s1=http://192.168.1.10:2380,etcd2=http://192.168.1.11:22380,etcd3=http://192.168.1.12:32380"
+etcd_initial_cluster: "etcd1=http://192.168.1.10:2380,etcd2=http://192.168.1.11:2380,etcd3=http://192.168.1.12:2380"
 

@@ -6,3 +6,9 @@
     state: restarted
   become: true
 
+
+- name: Stop PostgreSQL
+  systemd:
+    name: postgresql
+    state: stopped
+  become: true    

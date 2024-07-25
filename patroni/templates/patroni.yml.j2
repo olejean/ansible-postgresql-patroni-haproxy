@@ -3,7 +3,7 @@ namespace: /service/
 name: {{ ansible_hostname }}
 
 restapi:
-  listen: {{ ansible_default_ipv4.address }}:8008
+  listen: 0.0.0.0:8008
   connect_address: {{ ansible_default_ipv4.address }}:8008
 
 etcd:
@@ -16,6 +16,17 @@ bootstrap:
     retry_timeout: 10
     maximum_lag_on_failover: 1048576
     postgresql:
+      pg_hba:
+      # For kerberos gss based connectivity (discard @.*$)
+      #- host all all 0.0.0.0/0 gss include_realm=0
+      - host replication replicator 127.0.0.1/32 md5
+
+      - host replication replicator 192.168.1.0/24 md5
+      - host all all 0.0.0.0/0 md5
+      - local all postgres md5
+      - host all all      ::1/128      md5
+      - host all postgres 127.0.0.1/32 md5      
+ 
       use_pg_rewind: true
       parameters:
         wal_level: replica
@@ -25,16 +36,11 @@ bootstrap:
         max_replication_slots: 5
   initdb:
     - encoding: UTF8
-    - locale: en_US.UTF-8
-  users:
-    admin:
-      password: admin
-      options:
-        - createrole
-        - createdb
+    - locale: ru_RU.utf8
+
 
 postgresql:
-  listen: {{ ansible_default_ipv4.address }}:5432
+  listen: 0.0.0.0:5432
   connect_address: {{ ansible_default_ipv4.address }}:5432
   data_dir: /var/lib/postgresql/{{ postgresql_version }}/main
   bin_dir: /usr/lib/postgresql/{{ postgresql_version }}/bin

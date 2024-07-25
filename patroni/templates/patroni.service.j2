@@ -5,10 +5,9 @@ After=network.target
 [Service]
 Type=simple
 User=postgres
-Group=postgres
-ExecStart=/usr/local/bin/patroni {{ patroni_config_file }}
+Environment=PATH=/opt/patroni_venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+ExecStart=/opt/patroni_venv/bin/patroni /etc/patroni.yml
 Restart=always
-LimitNOFILE=65536
 
 [Install]
 WantedBy=multi-user.target

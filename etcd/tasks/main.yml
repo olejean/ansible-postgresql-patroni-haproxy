@@ -3,28 +3,28 @@
   get_url:
     url: "https://storage.googleapis.com/etcd/v{{ etcd_version }}/etcd-v{{ etcd_version }}-linux-amd64.tar.gz"
     dest: "/tmp/etcd-v{{ etcd_version }}-linux-amd64.tar.gz"
+- name: Create Directory 
+  file:
+    path: /usr/bin/cluster-etcd
+    state: directory
 
 - name: Extract Etcd binary
   unarchive:
     src: "/tmp/etcd-v{{ etcd_version }}-linux-amd64.tar.gz"
-    dest: "/tmp/cluster-etcd"
+    dest: "/usr/bin/cluster-etcd"
     extra_opts: [--strip-components=1]
 
-- name: Add Etcd to PATH
-  lineinfile:
-    path: /etc/profile
-    line: 'export PATH=$PATH:/tmp/cluster-etcd'
+
+
+- name: Add Etcd to PATH for all users
+  copy:
+    dest: /etc/profile.d/etcd.sh
+    content: |
+      export PATH=$PATH:/usr/bin/cluster-etcd
+
 
 - name: Source profile to update PATH
-  shell: source /etc/profile
-
-- name: Create data directory for Etcd
-  file:
-    path: "/tmp/etcd/{{ etcd_name }}"
-    state: directory
-    owner: etcd
-    group: etcd
-    mode: '0755'
+  shell: bash -c "source /etc/profile.d/etcd.sh"
 
 - name: Create Etcd systemd service
   template:

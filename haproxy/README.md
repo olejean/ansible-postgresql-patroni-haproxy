@@ -1,38 +1,26 @@
-Role Name
-=========
+# Роль Ansible: Keepalived
 
-A brief description of the role goes here.
+Эта роль устанавливает и настраивает Keepalived для обеспечения высокой доступности и балансировки нагрузки на уровне IP.
 
-Requirements
-------------
+## Требования
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+- Ansible 2.9 или выше
+- Ubuntu 20.04 или выше
 
-Role Variables
---------------
+## Переменные роли
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+| Переменная                        | Значение по умолчанию | Описание                                                              |
+|-----------------------------------|-----------------------|-----------------------------------------------------------------------|
+| `keepalived_vip`                  | `192.168.1.100`       | Виртуальный IP-адрес для Keepalived                                   |
+| `keepalived_interface`            | `eth0`                | Сетевой интерфейс для привязки VIP                                    |
+| `keepalived_router_id`            | `51`                  | Идентификатор маршрутизатора VRRP                                     |
+| `keepalived_auth_type`            | `PASS`                | Тип аутентификации VRRP (PASS или AH)                                 |
+| `keepalived_auth_pass`            | `password`            | Пароль для аутентификации VRRP                                        |
+| `keepalived_priority`             | `100`                 | Приоритет текущего узла (чем выше значение, тем выше приоритет)       |
 
-Dependencies
-------------
+## Пример использования
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
-
-Example Playbook
-----------------
-
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
-
-License
--------
-
-BSD
-
-Author Information
-------------------
-
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+```yaml
+- hosts: keepalived
+  roles:
+    - keepalived

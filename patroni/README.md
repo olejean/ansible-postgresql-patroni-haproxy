@@ -18,7 +18,7 @@
 
 | Переменная               | Значение по умолчанию          | Описание                                              |
 |--------------------------|--------------------------------|-------------------------------------------------------|
-| `patroni_version`        | `2.0.1`                        | Версия Patroni для установки                          |
+| `patroni_version`        | `3.3.2`                        | Версия Patroni для установки                          |
 | `patroni_config_file`    | `/etc/patroni.yml`             | Путь до конфигурационного файла Patroni               |
 | `postgresql_data_dir`    | `/var/lib/postgresql/12/main`  | Директория для хранения данных PostgreSQL             |
 | `patroni_scope`          | `postgres-cluster`             | Имя кластера Patroni                                  |

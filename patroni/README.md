@@ -32,6 +32,6 @@
 ## Пример использования
 
 ```yaml
-- hosts: patroni_postgresql
+- hosts: patroni
   roles:
-    - patroni_postgresql
+    - patroni

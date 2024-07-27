@@ -1,38 +1,36 @@
-Role Name
-=========
 
-A brief description of the role goes here.
+### Роль: patroni
 
-Requirements
-------------
+**Название файла:** `roles/patroni/README.md`
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+```markdown
+# Роль Ansible: Patroni
 
-Role Variables
---------------
+Эта роль устанавливает и настраивает Patroni для управления кластером PostgreSQL с высокой доступностью.
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+## Требования
 
-Dependencies
-------------
+- Ansible 2.9 или выше
+- Ubuntu 20.04 или выше
+- Установленный etcd
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+## Переменные роли
 
-Example Playbook
-----------------
+| Переменная               | Значение по умолчанию          | Описание                                              |
+|--------------------------|--------------------------------|-------------------------------------------------------|
+| `patroni_version`        | `2.0.1`                        | Версия Patroni для установки                          |
+| `patroni_config_file`    | `/etc/patroni.yml`             | Путь до конфигурационного файла Patroni               |
+| `postgresql_data_dir`    | `/var/lib/postgresql/12/main`  | Директория для хранения данных PostgreSQL             |
+| `patroni_scope`          | `postgres-cluster`             | Имя кластера Patroni                                  |
+| `etcd_cluster`           | `http://localhost:2379`        | Адрес кластера etcd для использования Patroni         |
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+## Зависимости
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+- Роль etcd
 
-License
--------
+## Пример использования
 
-BSD
-
-Author Information
-------------------
-
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+```yaml
+- hosts: patroni
+  roles:
+    - patroni

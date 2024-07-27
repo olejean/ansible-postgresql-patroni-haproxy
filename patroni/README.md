@@ -1,12 +1,6 @@
+# Роль Ansible: Patroni и PostgreSQL
 
-### Роль: patroni
-
-**Название файла:** `roles/patroni/README.md`
-
-```markdown
-# Роль Ansible: Patroni
-
-Эта роль устанавливает и настраивает Patroni для управления кластером PostgreSQL с высокой доступностью.
+Эта роль устанавливает и настраивает как Patroni, так и PostgreSQL для обеспечения высокой доступности базы данных.
 
 ## Требования
 
@@ -16,13 +10,20 @@
 
 ## Переменные роли
 
-| Переменная               | Значение по умолчанию          | Описание                                              |
-|--------------------------|--------------------------------|-------------------------------------------------------|
-| `patroni_version`        | `3.3.2`                        | Версия Patroni для установки                          |
-| `patroni_config_file`    | `/etc/patroni.yml`             | Путь до конфигурационного файла Patroni               |
-| `postgresql_data_dir`    | `/var/lib/postgresql/12/main`  | Директория для хранения данных PostgreSQL             |
-| `patroni_scope`          | `postgres-cluster`             | Имя кластера Patroni                                  |
-| `etcd_cluster`           | `http://localhost:2379`        | Адрес кластера etcd для использования Patroni         |
+| Переменная                      | Значение по умолчанию           | Описание                                                   |
+|---------------------------------|---------------------------------|------------------------------------------------------------|
+| `patroni_version`               | `3.3.2`                         | Версия Patroni для установки                               |
+| `postgresql_version`            | `16`                            | Версия PostgreSQL для установки                            |
+| `patroni_config_file`           | `/etc/patroni.yml`              | Путь до конфигурационного файла Patroni                    |
+| `postgresql_data_dir`           | `/var/lib/postgresql/12/main`   | Директория для хранения данных PostgreSQL                  |
+| `patroni_scope`                 | `postgres-cluster`              | Имя кластера Patroni                                       |
+| `etcd_cluster`                  | `http://localhost:2379`         | Адрес кластера etcd для использования Patroni              |
+| `patroni_loop_wait`             | `10`                            | Количество секунд для ожидания в цикле Patroni             |
+| `patroni_ttl`                   | `30`                            | Время жизни (TTL) для блокировки лидера                    |
+| `patroni_retry_timeout`         | `10`                            | Таймаут для повторных попыток операций Patroni             |
+| `postgresql_parameters`         | `{}`                            | Конфигурационные параметры (GUC) для PostgreSQL            |
+| `patroni_pg_hba`                | `[]`                            | Список строк для генерации файла pg_hba.conf Patroni       |
+| `patroni_pg_ident`              | `[]`                            | Список строк для генерации файла pg_ident.conf Patroni     |
 
 ## Зависимости
 
@@ -31,6 +32,6 @@
 ## Пример использования
 
 ```yaml
-- hosts: patroni
+- hosts: patroni_postgresql
   roles:
-    - patroni
+    - patroni_postgresql

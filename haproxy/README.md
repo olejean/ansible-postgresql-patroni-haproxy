@@ -17,7 +17,6 @@
 |-----------------------------------|-----------------------------------|-----------------------------------------------------------|
 | `haproxy_config_file`             | `/etc/haproxy/haproxy.cfg`        | Путь до конфигурационного файла HAProxy                   |
 | `haproxy_frontend_name`           | `stats`                           | Имя фронтенда                                             |
-| `haproxy_frontend_bind_address`   | `0.0.0.0`                         | Адрес для привязки фронтенда                              |
 | `haproxy_frontend_port`           | `8080`                            | Порт для привязки фронтенда                               |
 | `haproxy_backend_name`            | `patroni`                         | Имя бэкенда                                               |
 | `haproxy_backend_servers`         | `['server1 192.168.1.13:8008']`   | Список бэкенд серверов                                    |

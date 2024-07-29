@@ -32,8 +32,7 @@ frontend patroni
 backend patroni-backend
     mode tcp
     balance roundrobin
-    option httpchk OPTIONS /
-    server patroni1 {{ hostvars['patroni1'].ansible_default_ipv4.address }}:8008 check
-    server patroni2 {{ hostvars['patroni2'].ansible_default_ipv4.address }}:8008 check
-    server patroni3 {{ hostvars['patroni3'].ansible_default_ipv4.address }}:8008 check
-
+    
+    server patroni1 {{ hostvars['patroni1'].ansible_default_ipv4.address }}:5432 maxconn 100 check port  8008 
+    server patroni2 {{ hostvars['patroni2'].ansible_default_ipv4.address }}:5432  maxconn 100 check port 8008
+    server patroni3 {{ hostvars['patroni3'].ansible_default_ipv4.address }}:5432  maxconn 100 check port 8008
